@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.bureau.nocomment.exporizon.BuildConfig;
 
-import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
@@ -20,7 +19,15 @@ import org.altbeacon.beacon.RangeNotifier;
 import org.altbeacon.beacon.Region;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by RVB on 03/12/2016.
@@ -32,6 +39,15 @@ public class BeaconDetector implements BeaconConsumer {
     private Context context;
     private Region allBeaconsRegion;
     private boolean monitoring = false;
+    private Map<String, Beacon> beaconMap;
+    private List<Beacon> beaconList; // sorted by distance
+
+    public BeaconDetector() {
+        allBeaconsRegion = new Region("MonitoringBeacons",
+                Identifier.parse("c2ff6633-22ee-4dd9-a668-8666cc99aa88"), null, null);
+        beaconMap = new HashMap<>();
+        beaconList = new ArrayList<>();
+    }
 
     //region Public API
     public void initialize(Context context) {
@@ -42,8 +58,6 @@ public class BeaconDetector implements BeaconConsumer {
         beaconManager.getBeaconParsers().clear();
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")); // iBeacons
-        allBeaconsRegion = new Region("MonitoringBeacons",
-                Identifier.parse("c2ff6633-22ee-4dd9-a668-8666cc99aa88"), null, null);
         beaconManager.addMonitorNotifier(createMonitorNotifier());
         beaconManager.addRangeNotifier(createRangeNotifier());
         this.context = context;
@@ -90,13 +104,48 @@ public class BeaconDetector implements BeaconConsumer {
     //endregion
 
     //region PRIVATE
+    private void updateBeaconListWith(Collection<org.altbeacon.beacon.Beacon> altBeacons) {
+        Set<String> visibleBeacons = new HashSet<>();
+
+        // Update de visible ones.
+        if (altBeacons != null) {
+            for (org.altbeacon.beacon.Beacon altBeacon : altBeacons) {
+                String address = altBeacon.getBluetoothAddress();
+                Beacon beacon = beaconMap.get(address);
+                if (beacon == null) {
+                    beacon = new Beacon(address, altBeacon.getId3().toInt());
+                    beaconMap.put(address, beacon);
+                    beaconList.add(beacon);
+                }
+                beacon.updateVisibleBeacon(altBeacon.getDistance());
+                // get track of the visible ones
+                visibleBeacons.add(address);
+            }
+        }
+
+        // Cancel the invisible ones
+        for (Beacon beacon : beaconList) {
+            if (!visibleBeacons.contains(beacon.getAddress())) {
+                beacon.updateInvisibleBeacon();
+            }
+        }
+
+        // Sort
+        Collections.sort(beaconList, new Comparator<Beacon>() {
+            @Override
+            public int compare(Beacon lhs, Beacon rhs) {
+                return (int)(lhs.getMeanDistance() - rhs.getMeanDistance());
+            }
+        });
+    }
+
     @NonNull
     private RangeNotifier createRangeNotifier() {
         return new RangeNotifier() {
             @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
+            public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
-                    Log.i(BTAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
+                    updateBeaconListWith(beacons);
                 }
             }
         };
@@ -120,6 +169,7 @@ public class BeaconDetector implements BeaconConsumer {
             public void didExitRegion(Region region) {
                 Log.i(BTAG, "I no longer see any beacon");
                 try {
+                    updateBeaconListWith(null);
                     stopMonitoring(region);
                 } catch (RemoteException e) {
                     // TODO : do something more clever
