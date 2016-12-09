@@ -9,9 +9,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.bureau.nocomment.exporizon.App;
 import com.bureau.nocomment.exporizon.R;
@@ -30,10 +33,15 @@ import org.altbeacon.beacon.Region;
 import java.io.IOException;
 import java.util.Collection;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 public class HomeActivity extends AppCompatActivity {
 
     private static final int REQUEST_ENABLE_BT = 1001;
     private BeaconDetector beaconDetector;
+    @Bind(R.id.item_number) EditText itemNumber;
+    @Bind(R.id.click_blocker) LinearLayout clickBlocker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +57,18 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(HomeActivity.this, Dummy.class));
+            }
+        });
+
+        ButterKnife.bind(this);
+
+        itemNumber.setCursorVisible(true);
+        itemNumber.setSelection(itemNumber.getText().length());
+
+        clickBlocker.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
             }
         });
     }
