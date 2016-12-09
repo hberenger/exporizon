@@ -30,14 +30,15 @@ public class BeaconDetector implements BeaconConsumer {
     private Context context;
     private Region allBeaconsRegion;
 
-  public void initialize(Context context) {
+    //region Public API
+    public void initialize(Context context) {
         if (beaconManager != null) {
             return;
         }
         beaconManager = BeaconManager.getInstanceForApplication(context);
         beaconManager.getBeaconParsers().clear();
         beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24")); // iBeacons
         allBeaconsRegion = new Region("MonitoringBeacons",
                 Identifier.parse("c2ff6633-22ee-4dd9-a668-8666cc99aa88"), null, null);
         beaconManager.addMonitorNotifier(createMonitorNotifier());
@@ -45,6 +46,20 @@ public class BeaconDetector implements BeaconConsumer {
         this.context = context;
     }
 
+    public void start() throws BleNotAvailableException, IOException {
+        if (!beaconManager.checkAvailability()) {
+            throw new IOException("Bluetooth unavailable");
+        }
+        beaconManager.bind(this);
+    }
+
+    public void stop() throws RemoteException {
+        beaconManager.stopMonitoringBeaconsInRegion(allBeaconsRegion);
+        beaconManager.unbind(this);
+    }
+    //endregion
+
+    //region BeaconConsumer
     @Override
     public Context getApplicationContext() {
         return context.getApplicationContext();
@@ -60,18 +75,6 @@ public class BeaconDetector implements BeaconConsumer {
         return context.bindService(intent, serviceConnection, i);
     }
 
-    public void start() throws BleNotAvailableException, IOException {
-        if (!beaconManager.checkAvailability()) {
-            throw new IOException("Bluetooth unavailable");
-        }
-        beaconManager.bind(this);
-    }
-
-    public void stop() throws RemoteException {
-        beaconManager.stopMonitoringBeaconsInRegion(allBeaconsRegion);
-        beaconManager.unbind(this);
-    }
-
     @Override
     public void onBeaconServiceConnect() {
         try {
@@ -80,14 +83,16 @@ public class BeaconDetector implements BeaconConsumer {
             e.printStackTrace();
         }
     }
+    //endregion
 
+    //region PRIVATE
     @NonNull
     private RangeNotifier createRangeNotifier() {
         return new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
-                    Log.i(BTAG, "The first beacon I see is about "+beacons.iterator().next().getDistance()+" meters away.");
+                    Log.i(BTAG, "The first beacon I see is about " + beacons.iterator().next().getDistance() + " meters away.");
                 }
             }
         };
@@ -124,4 +129,5 @@ public class BeaconDetector implements BeaconConsumer {
             }
         };
     }
+    //endregion
 }
