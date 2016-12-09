@@ -18,4 +18,116 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!" />
+    <LinearLayout
+        android:id="@id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line2" >
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line3">
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button5"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button6"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/line4">
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button7"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button8"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button9"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@id/line4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/button0"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.bureau.nocomment.exporizon.view.KeyboardButton
+            android:text="Button"
+            android:id="@+id/buttonOK"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 </RelativeLayout>
