@@ -7,6 +7,8 @@ import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.bureau.nocomment.exporizon.BuildConfig;
+
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
@@ -29,6 +31,7 @@ public class BeaconDetector implements BeaconConsumer {
     private static final String BTAG = "BeaconDetector";
     private Context context;
     private Region allBeaconsRegion;
+    private boolean monitoring = false;
 
     //region Public API
     public void initialize(Context context) {
@@ -54,7 +57,7 @@ public class BeaconDetector implements BeaconConsumer {
     }
 
     public void stop() throws RemoteException {
-        beaconManager.stopMonitoringBeaconsInRegion(allBeaconsRegion);
+        stopMonitoring(allBeaconsRegion);
         beaconManager.unbind(this);
     }
     //endregion
@@ -78,11 +81,12 @@ public class BeaconDetector implements BeaconConsumer {
     @Override
     public void onBeaconServiceConnect() {
         try {
-            beaconManager.startMonitoringBeaconsInRegion(allBeaconsRegion);
+            startMonitoring(allBeaconsRegion);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
+
     //endregion
 
     //region PRIVATE
@@ -114,9 +118,9 @@ public class BeaconDetector implements BeaconConsumer {
 
             @Override
             public void didExitRegion(Region region) {
-                Log.i(BTAG, "I no longer see an beacon");
+                Log.i(BTAG, "I no longer see any beacon");
                 try {
-                    beaconManager.stopMonitoringBeaconsInRegion(region);
+                    stopMonitoring(region);
                 } catch (RemoteException e) {
                     // TODO : do something more clever
                     e.printStackTrace();
@@ -128,6 +132,21 @@ public class BeaconDetector implements BeaconConsumer {
                 Log.i(BTAG, "I have just switched from seeing/not seeing beacons: " + state);
             }
         };
+    }
+
+    private void startMonitoring(Region region) throws RemoteException {
+        if (BuildConfig.DEBUG && !region.equals(allBeaconsRegion)) { throw new AssertionError("Trying to monitor an unknown region"); }
+        if (BuildConfig.DEBUG && monitoring) { throw new AssertionError("The beacon detector is already monitoring"); }
+        beaconManager.startMonitoringBeaconsInRegion(region);
+        monitoring = true;
+    }
+
+    private void stopMonitoring(Region region) throws RemoteException {
+        if (BuildConfig.DEBUG && !region.equals(allBeaconsRegion)) { throw new AssertionError("Trying to monitor an unknown region"); }
+        if (monitoring) {
+            beaconManager.stopMonitoringBeaconsInRegion(region);
+            monitoring = false;
+        }
     }
     //endregion
 }
