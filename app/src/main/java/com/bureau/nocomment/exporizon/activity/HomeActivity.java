@@ -160,7 +160,7 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
         itemNumber.getText().append(button.getText());
     }
 
-    @OnClick({ R.id.buttonBack })
+    @OnClick(R.id.buttonBack)
     void onKeyboardBack(KeyboardImageButton button) {
         if (itemNumber.getText().length() > 0) {
             itemNumber.getText().delete(itemNumber.getText().length() - 1, itemNumber.getText().length());
