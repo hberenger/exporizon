@@ -42,6 +42,7 @@ public class BeaconDetector implements BeaconConsumer {
     private Map<String, Beacon> beaconMap;
     private List<Beacon> beaconList; // sorted by distance
     private List<BeaconObserver> beaconObservers;
+    private String status;
 
     public BeaconDetector() {
         allBeaconsRegion = new Region("MonitoringBeacons",
@@ -49,6 +50,7 @@ public class BeaconDetector implements BeaconConsumer {
         beaconMap = new HashMap<>();
         beaconList = new ArrayList<>();
         beaconObservers = new ArrayList<>();
+        status = "";
     }
 
     //region Public API
@@ -69,11 +71,13 @@ public class BeaconDetector implements BeaconConsumer {
         if (!beaconManager.checkAvailability()) {
             throw new IOException("Bluetooth unavailable");
         }
+        setStatus("connecting");
         beaconManager.bind(this);
     }
 
     public void stop() throws RemoteException {
         stopMonitoring(allBeaconsRegion);
+        setStatus("disconnected");
         beaconManager.unbind(this);
     }
 
@@ -105,6 +109,7 @@ public class BeaconDetector implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
+        setStatus("connected - starting monitoring");
         try {
             startMonitoring(allBeaconsRegion);
         } catch (RemoteException e) {
@@ -115,6 +120,14 @@ public class BeaconDetector implements BeaconConsumer {
     //endregion
 
     //region PRIVATE
+
+    private void setStatus(String status) {
+        this.status = status;
+        for (BeaconObserver observer : beaconObservers) {
+            observer.onBeaconRangeUpdate(this.status);
+        }
+    }
+
     private void updateBeaconListWith(Collection<org.altbeacon.beacon.Beacon> altBeacons) {
         Set<String> visibleBeacons = new HashSet<>();
 
@@ -151,15 +164,16 @@ public class BeaconDetector implements BeaconConsumer {
     }
 
     private void logBeaconsRange() {
-        String msg = "Beacons updated : ";
+        String msg = "beacons updated : ";
         if (beaconList.size() > 0) {
             for (Beacon beacon : beaconList) {
-                msg += "[#" + beacon.getZone() + "@" + beacon.getMeanDistanceString() + "m.], ";
+                msg += "[#" + beacon.getZone() + "@" + beacon.getStatusString() + "], ";
             }
             msg = msg.substring(0, msg.length() - 2);
         } else {
             msg += "no visible beacon";
         }
+        setStatus(msg);
         Log.i(BTAG, msg);
     }
 
@@ -193,7 +207,8 @@ public class BeaconDetector implements BeaconConsumer {
         return new MonitorNotifier() {
             @Override
             public void didEnterRegion(Region region) {
-                Log.i(BTAG, "I just saw an beacon for the first time!");
+                Log.i(BTAG, "detected beacons from region " + region.getUniqueId());
+                setStatus("start ranging");
                 try {
                     beaconManager.startRangingBeaconsInRegion(region);
                 } catch (RemoteException e) {
@@ -204,10 +219,11 @@ public class BeaconDetector implements BeaconConsumer {
 
             @Override
             public void didExitRegion(Region region) {
-                Log.i(BTAG, "I no longer see any beacon");
+                Log.i(BTAG, "leaving region " + region.getBluetoothAddress());
                 try {
                     updateBeaconListWith(null);
                     stopMonitoring(region);
+                    setStatus("stop ranging");
                 } catch (RemoteException e) {
                     // TODO : do something more clever
                     e.printStackTrace();
@@ -217,6 +233,7 @@ public class BeaconDetector implements BeaconConsumer {
             @Override
             public void didDetermineStateForRegion(int state, Region region) {
                 Log.i(BTAG, "I have just switched from seeing/not seeing beacons: " + state);
+                setStatus((state > 0) ? "beacons in sight" : "no beacon in sight");
             }
         };
     }

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bureau.nocomment.exporizon.App;
 import com.bureau.nocomment.exporizon.R;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
     private BeaconDetector beaconDetector;
     @Bind(R.id.item_number) EditText itemNumber;
     @Bind(R.id.click_blocker) LinearLayout clickBlocker;
+    @Bind(R.id.status_bar) TextView statusBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,5 +159,15 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
     @Override
     public void onBeaconDetectedWithinCloseRange(com.bureau.nocomment.exporizon.ble.Beacon beacon) {
         startActivity(new Intent(HomeActivity.this, Dummy.class));
+    }
+
+    @Override
+    public void onBeaconRangeUpdate(final String status) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                statusBar.setText(status);
+            }
+        });
     }
 }

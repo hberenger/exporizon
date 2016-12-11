@@ -14,6 +14,14 @@
     tools:showIn="@layout/activity_main"
     tools:context="com.bureau.nocomment.exporizon.activity.HomeActivity">
 
+    <TextView
+        android:id="@+id/status_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="status bar"
+        android:textColor="@color/colorStatusBar"/>
+
     <EditText
         android:id="@+id/item_number"
         android:layout_width="match_parent"

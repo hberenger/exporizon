@@ -28,8 +28,8 @@ public class Beacon {
         return meanDistance;
     }
 
-    public String getMeanDistanceString() {
-        return meanDistance > 100.0 ? "+inf" : String.format("%.2f", meanDistance);
+    public String getStatusString() {
+        return (meanDistance > 100.0 ? "+inf" : String.format("%.2fm.", meanDistance)) + "&T=" + observations.size();
     }
 
     public String getAddress() {

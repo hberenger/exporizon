@@ -6,4 +6,5 @@ package com.bureau.nocomment.exporizon.ble;
 
 public interface BeaconObserver {
     void onBeaconDetectedWithinCloseRange(Beacon beacon);
+    void onBeaconRangeUpdate(String status);
 }
