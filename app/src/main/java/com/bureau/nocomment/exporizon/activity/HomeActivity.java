@@ -22,6 +22,8 @@ import com.bureau.nocomment.exporizon.R;
 import com.bureau.nocomment.exporizon.ble.BeaconDetector;
 import com.bureau.nocomment.exporizon.ble.BeaconObserver;
 import com.bureau.nocomment.exporizon.ble.unused.RawBeaconDetector;
+import com.bureau.nocomment.exporizon.view.KeyboardButton;
+import com.bureau.nocomment.exporizon.view.KeyboardImageButton;
 
 import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
@@ -37,6 +39,7 @@ import java.util.Collection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class HomeActivity extends AppCompatActivity implements BeaconObserver {
 
@@ -54,14 +57,6 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
         setSupportActionBar(toolbar);
 
         beaconDetector = ((App) getApplicationContext()).getBeaconDetector();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(HomeActivity.this, Dummy.class));
-            }
-        });
 
         ButterKnife.bind(this);
 
@@ -169,5 +164,23 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
                 statusBar.setText(status);
             }
         });
+    }
+
+    @OnClick({ R.id.button0, R.id.button1, R.id.button2, R.id.button3, R.id.button4,
+               R.id.button5, R.id.button6, R.id.button7, R.id.button8, R.id.button9})
+    void onKeyboardDigit(KeyboardButton button) {
+        itemNumber.getText().append(button.getText());
+    }
+
+    @OnClick({ R.id.buttonBack })
+    void onKeyboardBack(KeyboardImageButton button) {
+        if (itemNumber.getText().length() > 0) {
+            itemNumber.getText().delete(itemNumber.getText().length() - 1, itemNumber.getText().length());
+        }
+    }
+
+    @OnClick({ R.id.buttonOK })
+    void onKeyboardValidate(KeyboardImageButton button) {
+        startActivity(new Intent(HomeActivity.this, Dummy.class));
     }
 }
