@@ -2,18 +2,21 @@ package com.bureau.nocomment.exporizon.activity;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bureau.nocomment.exporizon.R;
@@ -31,7 +34,10 @@ public class DetailActivity extends AppCompatActivity {
     @Bind(R.id.item_description) TextView itemDescription;
     @Bind(R.id.play_button) ImageButton playButton;
     @Bind(R.id.pause_button) ImageButton  pauseButton;
+    @Bind(R.id.progress_bar) AppCompatSeekBar progressBar;
     MediaPlayer player;
+    private Handler progressUpdateHandler;
+    private Runnable progressUpdater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +54,43 @@ public class DetailActivity extends AppCompatActivity {
 
         player = MediaPlayer.create(this, R.raw.weininger);
         player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                pauseSoundtrack();
+                player.seekTo(0);
+            }
+        });
 
         itemImage.setImageResource(R.drawable.weininger);
         itemTitle.setText("Théâtre sphérique");
         itemSubtitle.setText("Andor Weininger, 1926");
         itemDescription.setText(R.string.lorem_ipsum);
         itemDescription.setMovementMethod(new ScrollingMovementMethod());
+
+        progressUpdateHandler = new Handler();
+        progressUpdater = createUpdater();
+        progressBar.setMax(player.getDuration()); // in ms
+        progressBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if(player != null && fromUser){
+                    player.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        progressUpdateHandler.removeCallbacks(progressUpdater);
         if (player.isPlaying()) {
             player.stop();
         }
@@ -89,12 +121,14 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void playSoundtrack() {
+        progressUpdateHandler.post(progressUpdater);
         player.start();
         playButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.VISIBLE);
     }
 
     private void pauseSoundtrack() {
+        progressUpdateHandler.removeCallbacks(progressUpdater);
         player.pause();
         playButton.setVisibility(View.VISIBLE);
         pauseButton.setVisibility(View.GONE);
@@ -108,5 +142,18 @@ public class DetailActivity extends AppCompatActivity {
     @OnClick(R.id.pause_button)
     void onPauseButton(ImageButton button) {
         pauseSoundtrack();
+    }
+
+    private Runnable createUpdater() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if(player != null){
+                    int mCurrentPosition = player.getCurrentPosition();
+                    progressBar.setProgress(mCurrentPosition);
+                }
+                progressUpdateHandler.postDelayed(this, 1000);
+            }
+        };
     }
 }

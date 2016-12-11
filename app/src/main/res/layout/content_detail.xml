@@ -56,4 +56,12 @@
         android:src="@android:drawable/ic_media_pause"
         android:contentDescription="@string/pause_button" />
 
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:progress="50"
+        android:max="100"/>
+
+
 </LinearLayout>
