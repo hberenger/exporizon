@@ -219,7 +219,7 @@ public class BeaconDetector implements BeaconConsumer {
 
             @Override
             public void didExitRegion(Region region) {
-                Log.i(BTAG, "leaving region " + region.getBluetoothAddress());
+                Log.i(BTAG, "leaving region " + region.getUniqueId());
                 try {
                     updateBeaconListWith(null);
                     beaconManager.stopRangingBeaconsInRegion(region);
