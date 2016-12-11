@@ -41,12 +41,14 @@ public class BeaconDetector implements BeaconConsumer {
     private boolean monitoring = false;
     private Map<String, Beacon> beaconMap;
     private List<Beacon> beaconList; // sorted by distance
+    private List<BeaconObserver> beaconObservers;
 
     public BeaconDetector() {
         allBeaconsRegion = new Region("MonitoringBeacons",
                 Identifier.parse("c2ff6633-22ee-4dd9-a668-8666cc99aa88"), null, null);
         beaconMap = new HashMap<>();
         beaconList = new ArrayList<>();
+        beaconObservers = new ArrayList<>();
     }
 
     //region Public API
@@ -74,6 +76,15 @@ public class BeaconDetector implements BeaconConsumer {
         stopMonitoring(allBeaconsRegion);
         beaconManager.unbind(this);
     }
+
+    public void subscribe(BeaconObserver observer) {
+        beaconObservers.add(observer);
+    }
+
+    public void unsubscribe(BeaconObserver observer) {
+        beaconObservers.remove(observer);
+    }
+
     //endregion
 
     //region BeaconConsumer
@@ -139,6 +150,19 @@ public class BeaconDetector implements BeaconConsumer {
         });
     }
 
+    private void logBeaconsRange() {
+        String msg = "Beacons updated : ";
+        if (beaconList.size() > 0) {
+            for (Beacon beacon : beaconList) {
+                msg += "[#" + beacon.getZone() + "@" + beacon.getMeanDistanceString() + "m.], ";
+            }
+            msg = msg.substring(0, msg.length() - 2);
+        } else {
+            msg += "no visible beacon";
+        }
+        Log.i(BTAG, msg);
+    }
+
     @NonNull
     private RangeNotifier createRangeNotifier() {
         return new RangeNotifier() {
@@ -146,6 +170,19 @@ public class BeaconDetector implements BeaconConsumer {
             public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
                     updateBeaconListWith(beacons);
+
+                    logBeaconsRange();
+
+                    for (Beacon beacon : beaconList) {
+                        if (beacon.isReliablyInSight()) {
+                            for (BeaconObserver observer : beaconObservers) {
+                                observer.onBeaconDetectedWithinCloseRange(beacon);
+                                // make sure the beacon won't keep popping up
+                                beacon.makeOutOfSight();
+                            }
+                        }
+                        break;
+                    }
                 }
             }
         };

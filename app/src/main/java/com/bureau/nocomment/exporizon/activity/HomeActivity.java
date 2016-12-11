@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import com.bureau.nocomment.exporizon.App;
 import com.bureau.nocomment.exporizon.R;
 import com.bureau.nocomment.exporizon.ble.BeaconDetector;
+import com.bureau.nocomment.exporizon.ble.BeaconObserver;
 import com.bureau.nocomment.exporizon.ble.unused.RawBeaconDetector;
 
 import org.altbeacon.beacon.Beacon;
@@ -36,7 +37,7 @@ import java.util.Collection;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements BeaconObserver {
 
     private static final int REQUEST_ENABLE_BT = 1001;
     private BeaconDetector beaconDetector;
@@ -93,6 +94,18 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        beaconDetector.subscribe(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        beaconDetector.unsubscribe(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         try {
@@ -139,5 +152,10 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBeaconDetectedWithinCloseRange(com.bureau.nocomment.exporizon.ble.Beacon beacon) {
+        startActivity(new Intent(HomeActivity.this, Dummy.class));
     }
 }

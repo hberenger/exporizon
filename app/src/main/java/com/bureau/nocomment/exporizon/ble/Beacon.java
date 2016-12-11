@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class Beacon {
     private static int MEMORY = 3;
-    private static double THRESHOLD = 1.5;
+    private static double THRESHOLD = 3.0;
 
     private String address;
     private int zone;
@@ -26,6 +26,10 @@ public class Beacon {
 
     public double getMeanDistance() {
         return meanDistance;
+    }
+
+    public String getMeanDistanceString() {
+        return meanDistance > 100.0 ? "+inf" : String.format("%.2f", meanDistance);
     }
 
     public String getAddress() {
@@ -57,6 +61,10 @@ public class Beacon {
 
     boolean isReliablyInSight() {
         return meanDistance < THRESHOLD && (observations.size() == MEMORY);
+    }
+
+    void makeOutOfSight() {
+        updateInvisibleBeacon();
     }
 
     @Override
