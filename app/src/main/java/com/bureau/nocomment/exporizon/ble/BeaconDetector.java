@@ -222,7 +222,7 @@ public class BeaconDetector implements BeaconConsumer {
                 Log.i(BTAG, "leaving region " + region.getBluetoothAddress());
                 try {
                     updateBeaconListWith(null);
-                    stopMonitoring(region);
+                    beaconManager.stopRangingBeaconsInRegion(region);
                     setStatus("stop ranging");
                 } catch (RemoteException e) {
                     // TODO : do something more clever
