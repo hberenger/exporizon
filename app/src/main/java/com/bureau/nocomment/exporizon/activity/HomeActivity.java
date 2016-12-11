@@ -4,11 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
@@ -21,21 +18,12 @@ import com.bureau.nocomment.exporizon.App;
 import com.bureau.nocomment.exporizon.R;
 import com.bureau.nocomment.exporizon.ble.BeaconDetector;
 import com.bureau.nocomment.exporizon.ble.BeaconObserver;
-import com.bureau.nocomment.exporizon.ble.unused.RawBeaconDetector;
 import com.bureau.nocomment.exporizon.view.KeyboardButton;
 import com.bureau.nocomment.exporizon.view.KeyboardImageButton;
 
-import org.altbeacon.beacon.Beacon;
-import org.altbeacon.beacon.BeaconConsumer;
-import org.altbeacon.beacon.BeaconManager;
-import org.altbeacon.beacon.BeaconParser;
 import org.altbeacon.beacon.BleNotAvailableException;
-import org.altbeacon.beacon.MonitorNotifier;
-import org.altbeacon.beacon.RangeNotifier;
-import org.altbeacon.beacon.Region;
 
 import java.io.IOException;
-import java.util.Collection;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -153,7 +141,7 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
 
     @Override
     public void onBeaconDetectedWithinCloseRange(com.bureau.nocomment.exporizon.ble.Beacon beacon) {
-        startActivity(new Intent(HomeActivity.this, Dummy.class));
+        startActivity(new Intent(HomeActivity.this, DetailActivity.class));
     }
 
     @Override
@@ -181,6 +169,6 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
 
     @OnClick({ R.id.buttonOK })
     void onKeyboardValidate(KeyboardImageButton button) {
-        startActivity(new Intent(HomeActivity.this, Dummy.class));
+        startActivity(new Intent(HomeActivity.this, DetailActivity.class));
     }
 }
