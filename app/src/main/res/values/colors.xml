@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#FFC107</color>
     <color name="colorStatusBar">#a5c698</color>
     <color name="colorKeyboard">#000000</color>
+    <color name="lightGray">#bdbdbd</color>
+    <color name="white">#ffffff</color>
+    <color name="buttonPlay">@color/white</color>
+    <color name="buttonPause">@color/white</color>
+    <color name="buttonBackground">@color/colorAccent</color>
+    <color name="buttonBackgroundPressed">#d6a207</color>
+    <color name="buttonShadow">#CCCCCC</color>
 </resources>
