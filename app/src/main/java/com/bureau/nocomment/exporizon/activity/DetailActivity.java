@@ -28,10 +28,11 @@ import com.bureau.nocomment.exporizon.view.KeyboardImageButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uk.co.senab.photoview.PhotoView;
 
 public class DetailActivity extends AppCompatActivity {
 
-    @Bind(R.id.item_image) ImageView itemImage;
+    @Bind(R.id.item_image) PhotoView itemImage;
     @Bind(R.id.item_title) TextView itemTitle;
     @Bind(R.id.item_subtitle) TextView itemSubtitle;
     @Bind(R.id.item_description) TextView itemDescription;
@@ -65,6 +66,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        itemImage.setMaximumScale(10);
         itemImage.setImageResource(R.drawable.weininger);
         actionBar.setTitle("Théâtre sphérique");
         itemTitle.setVisibility(View.GONE);

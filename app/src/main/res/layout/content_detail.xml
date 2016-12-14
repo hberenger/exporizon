@@ -14,10 +14,10 @@
     tools:showIn="@layout/activity_detail"
     android:orientation="vertical">
 
-    <ImageView
+    <uk.co.senab.photoview.PhotoView
         android:id="@+id/item_image"
         android:layout_width="match_parent"
-        android:layout_height="134dp"
+        android:layout_height="180dp"
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.22"
