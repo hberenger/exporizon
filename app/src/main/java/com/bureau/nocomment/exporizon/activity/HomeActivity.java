@@ -67,11 +67,19 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
     @Override
     protected void onStart() {
         super.onStart();
+        startDetector(true);
+    }
+
+    private void startDetector(boolean askPermission) {
         try {
             beaconDetector.start();
         } catch (IOException e) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            if (askPermission) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                e.printStackTrace();
+            }
         } catch (BleNotAvailableException e) {
             // TODO : do something more clever
             e.printStackTrace();
@@ -105,12 +113,7 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == RESULT_OK) {
-                try {
-                    beaconDetector.start();
-                } catch (IOException e) {
-                    // TODO : do something more clever
-                    e.printStackTrace();
-                }
+                startDetector(false);
             } else {
                 // TODO
             }
