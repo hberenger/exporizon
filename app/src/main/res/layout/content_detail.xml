@@ -21,17 +21,22 @@
         android:adjustViewBounds="true"
         android:layout_gravity="center_horizontal"
         android:layout_weight="0.22"
-        android:contentDescription="@string/item_detail" />
+        android:contentDescription="@string/item_detail"
+        android:layout_marginBottom="@dimen/detail_page_element_margin" />
 
     <TextView
         android:id="@+id/item_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/detail_page_element_margin"/>
 
     <TextView
         android:id="@+id/item_subtitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:textAppearance="@style/subtitleText"
+        android:layout_marginBottom="@dimen/detail_page_element_margin" />
 
     <TextView
         android:id="@+id/item_description"
@@ -39,7 +44,8 @@
         android:layout_height="0dp"
         android:layout_weight="1.0"
         android:maxLines="20"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:layout_marginBottom="@dimen/detail_page_element_margin" />
 
     <ImageButton
         android:id="@+id/play_button"

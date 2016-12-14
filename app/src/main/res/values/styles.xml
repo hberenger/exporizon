@@ -26,4 +26,9 @@
         <item name="elevation">0dp</item>
     </style>
 
+    <style name="subtitleText" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:textColor">#a0a0a0</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
 </resources>

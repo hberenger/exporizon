@@ -1,5 +1,6 @@
 package com.bureau.nocomment.exporizon.activity;
 
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Handler;
@@ -11,7 +12,9 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.StyleSpan;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -63,8 +66,9 @@ public class DetailActivity extends AppCompatActivity {
         });
 
         itemImage.setImageResource(R.drawable.weininger);
-        itemTitle.setText("Théâtre sphérique");
-        itemSubtitle.setText("Andor Weininger, 1926");
+        actionBar.setTitle("Théâtre sphérique");
+        itemTitle.setVisibility(View.GONE);
+        itemSubtitle.setText(italicCharSequenceFrom("Andor Weininger, 1926"));
         itemDescription.setText(R.string.lorem_ipsum);
         itemDescription.setMovementMethod(new ScrollingMovementMethod());
 
@@ -155,5 +159,13 @@ public class DetailActivity extends AppCompatActivity {
                 progressUpdateHandler.postDelayed(this, 1000);
             }
         };
+    }
+
+    // To workaround a Samsung bug
+    private static CharSequence italicCharSequenceFrom(CharSequence text) {
+        final StyleSpan style = new StyleSpan(Typeface.ITALIC);
+        final SpannableString str = new SpannableString(text);
+        str.setSpan(style, 0, text.length(), 0);
+        return str;
     }
 }
