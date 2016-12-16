@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">exporizon</string>
+    <string name="expo_name">Entre terre et ciel...</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail">Detail</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse a semper magna, sit amet fermentum elit. Praesent nisi ante, ultrices sed enim nec, molestie vestibulum augue. Mauris accumsan nibh lorem, eget maximus sem auctor ac. Morbi non tellus quis lectus ullamcorper sodales in et est. Duis molestie pellentesque varius. Maecenas nisl nisi, ullamcorper eu nulla id, gravida malesuada risus. Aliquam pulvinar augue ac orci pharetra tempus. Donec vel dictum erat. Duis tincidunt, turpis egestas imperdiet porttitor, dolor massa semper eros, quis laoreet nisl diam non neque. Fusce eget dolor dictum dolor dictum porta a egestas purus. Donec vulputate nisl eu malesuada tempor. Donec laoreet dignissim arcu, vel pulvinar urna mattis hendrerit. Phasellus suscipit aliquet egestas. Etiam mi nibh, rhoncus nec arcu ac, malesuada feugiat quam. Nam a enim eget neque finibus convallis a at sem.
