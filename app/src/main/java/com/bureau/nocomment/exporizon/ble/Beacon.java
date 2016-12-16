@@ -9,7 +9,7 @@ import java.util.Queue;
 
 public class Beacon {
     private static int MEMORY = 2;
-    private static double THRESHOLD = 0.6;
+    private static double THRESHOLD = 1.0;
     private static double ADJUSTMENT_FACTOR = 0.5;
 
     private String address;
