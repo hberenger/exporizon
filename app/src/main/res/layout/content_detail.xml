@@ -66,6 +66,7 @@
             android:src="@drawable/ic_play_button"
             android:contentDescription="@string/play_button"
             android:background="@drawable/round_button"
+            android:layout_marginBottom="8dp"
             android:tint="@color/buttonPlay" />
 
         <ImageButton
@@ -77,12 +78,14 @@
             android:src="@drawable/ic_pause_button"
             android:contentDescription="@string/pause_button"
             android:background="@drawable/round_button"
+            android:layout_marginBottom="8dp"
             android:tint="@color/buttonPause" />
 
         <android.support.v7.widget.AppCompatSeekBar
             android:id="@+id/progress_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
             android:progress="50"
             android:max="100"
             />
