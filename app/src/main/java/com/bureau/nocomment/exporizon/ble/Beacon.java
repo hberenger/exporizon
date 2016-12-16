@@ -8,8 +8,9 @@ import java.util.Queue;
  */
 
 public class Beacon {
-    private static int MEMORY = 3;
-    private static double THRESHOLD = 3.0;
+    private static int MEMORY = 2;
+    private static double THRESHOLD = 0.6;
+    private static double ADJUSTMENT_FACTOR = 0.5;
 
     private String address;
     private int zone;
@@ -41,6 +42,7 @@ public class Beacon {
     }
 
     void updateVisibleBeacon(double distance) {
+        distance *= ADJUSTMENT_FACTOR;
         // Append value
         observations.add(distance);
         if (observations.size() > MEMORY) {
