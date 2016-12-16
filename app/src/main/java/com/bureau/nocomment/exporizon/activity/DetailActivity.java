@@ -71,7 +71,8 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setTitle("Théâtre sphérique");
         itemTitle.setVisibility(View.GONE);
         itemSubtitle.setText(italicCharSequenceFrom("Andor Weininger, 1926"));
-        itemDescription.setText(R.string.lorem_ipsum);
+        String msg = this.getString(R.string.lorem_ipsum);
+        itemDescription.setText(msg + "\r\n" + "\r\n" + "\r\n" + "\r\n" + "\r\n");
         itemDescription.setMovementMethod(new ScrollingMovementMethod());
 
         progressUpdateHandler = new Handler();
