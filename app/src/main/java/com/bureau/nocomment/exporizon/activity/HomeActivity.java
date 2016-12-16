@@ -1,9 +1,11 @@
 package com.bureau.nocomment.exporizon.activity;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -157,6 +159,9 @@ public class HomeActivity extends AppCompatActivity implements BeaconObserver {
                     startActivity(new Intent(HomeActivity.this, DetailActivity.class));
                 }
             });
+            Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            v.vibrate(500);
             snack.show();
         } else {
             startActivity(new Intent(HomeActivity.this, DetailActivity.class));
